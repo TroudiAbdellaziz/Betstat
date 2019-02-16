@@ -14,6 +14,17 @@ import { Router } from '@angular/router';
 export class DashboardComponent implements OnInit {
 
 
+
+
+  // Doughnut
+  public doughnutChartLabels: string[] = ['Paper won', 'Paper compensated', 'Paper lost'];
+  public doughnutChartLabelsSystem: string[] = ['Papers with profit', 'Papers with loss'];
+  public doughnutChartData: number[] = [350, 450, 100];
+  public doughnutChartDataSystem: number[] = [350, 450, 100];
+  public doughnutChartType: string = 'doughnut';
+  public pieChartType: string = 'pie';
+
+
   public chartHeight = 35;
   public userId: any;
   public user: any;
@@ -50,16 +61,18 @@ export class DashboardComponent implements OnInit {
     }
   ];
   constructor(private router: Router, private userService: UserService) {
-
-  }
-  ngOnInit(): void {
     if (!localStorage.getItem("user")) {
       console.log("here")
-      this.router.navigate['login'];
+      window.location.assign('/#/login');
+
     } else {
       this.userId = localStorage.getItem("user");
       console.log(localStorage.getItem("user"));
+
     }
+  }
+  ngOnInit(): void {
+
     let self = this;
     for (let i = 1; i < 31; i++) {
       this.lineChartLabels.push(i);
@@ -67,12 +80,12 @@ export class DashboardComponent implements OnInit {
     this.userService.getUser(this.userId).subscribe((res) => {
       if (res.success == true) {
         console.log("here");
-        console.log(res);
+        //console.log(res);
         this.user = res.user;
         console.log(this.user);
         let x = Math.round(parseInt(this.user.highPaper) / 100) * 100;
         console.log(x + 100);
-        this.card1 = { color: "#1ebfae", icon: "fa-users", label: "Income", data: Math.round(this.user.income * 100) / 100 };
+        this.card1 = { color: "#1ebfae", icon: "fa-users", label: "Balance", data: Math.round(this.user.balance * 100) / 100 };
         this.card2 = { color: "#30a5ff", icon: "fa-cogs", label: "Papers", data: this.user.nbPapers };
         this.card3 = { color: "#ffb53e", icon: "fa-cogs", label: "Bets", data: this.user.bets };
         this.card4 = { color: "#f9243f", icon: "fa-cog", label: "Success rate", data: Math.round(this.user.success * 100) / 100 };
@@ -81,9 +94,9 @@ export class DashboardComponent implements OnInit {
         this.pbar3 = { color: "#ffb53e", max: (Math.round(this.user.highStake / 100) * 100) + 100, label: "Highest stake", current: this.user.highStake };
         this.pbar4 = { color: "#f9243f", max: (Math.round(this.user.highLoss / 100) * 100) + 100, label: "Highest loss", current: this.user.highLoss };
 
-
+        // console.log(this.user.deposits);
         this.lineChartData = [{ data: this.user.deposits, label: 'Investment' },
-        { data: this.user.incomePaper, label: 'Income generated' }];
+        { data: this.user.incomeGenerated, label: 'Income generated' }];
 
 
         var month = new Array();
@@ -110,10 +123,10 @@ export class DashboardComponent implements OnInit {
           console.log(date);
           news = {
             large: day,
-            small: month[parseInt(date[1])-1],
+            small: month[parseInt(date[1]) - 1],
             link: "http://www.aebiss.com",
             title: transaction.typeTransaction.toUpperCase(),
-            content: transaction.description+" : "+transaction.money
+            content: transaction.description + " : " + transaction.money
           }
           this.newsList.push(news);
 
@@ -123,13 +136,24 @@ export class DashboardComponent implements OnInit {
           let league = this.user.leagues[i];
           console.log(league);
           news = {
-            large: Math.round(league.rate * 100)+'%',
-            small: league.nbBets+' bets',
+            large: Math.round(league.rate * 100) + '%',
+            small: league.nbBets + ' bets',
             title: league.name,
           }
           this.leagueList.push(news);
 
         }
+        console.log(this.user);
+        if((this.user.paperWon==0)&&(this.user.paperCompensated==0)&&(this.user.paperLost==0)){
+          this.user.paperCompensated=1;
+          this.user.paperCompensatedLost=1;
+          this.user.paperLost=1;
+          this.user.paperWon=1;
+          this.user.paperCompensatedWon=1;
+        }
+        this.doughnutChartData=[this.user.paperWon, this.user.paperLost, this.user.paperCompensated]
+        this.doughnutChartDataSystem=[this.user.paperCompensatedWon, this.user.paperCompensatedLost]
+
         this.loaded = true;
 
       }

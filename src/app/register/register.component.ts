@@ -44,11 +44,23 @@ export class RegisterComponent {
     user.nbPapers=0;
     user.success=0;
     user.successPaper=[];
-    user.incomePaper=[];
+    user.incomeGenerated=[];
+    user.balance=0;
+    user.leagues=[];
+    user.paperWon=0;
+    user.paperLost=0;
+    user.paperCompensated=0;
+    user.paperCompensatedWon=0;
+    user.paperCompensatedLost=0;
+    user.bestBets=[];
+    user.deposits=[];
+    user.deposit=0;
+
     console.log(user);
     for(let i=1;i<31;i++){
         user.successPaper.push(0);
-        user.incomePaper.push(0);
+        user.incomeGenerated.push(0);
+        user.deposits.push(0);
     }
     this.service.signup(user).subscribe((res)=>
   

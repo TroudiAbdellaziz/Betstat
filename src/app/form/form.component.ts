@@ -5,6 +5,7 @@ import { HttpClient} from '@angular/common/http';
 import { Component } from '@angular/core';
 import {PaperService} from '../services/paper.service';
 import {TransactionService} from '../services/transaction.service';
+import { Router } from '@angular/router';
 import {FormGroup, AbstractControl, FormBuilder, Validators, FormArray, FormControl} from '@angular/forms';
 @Component({
   templateUrl: './form.component.html',
@@ -29,10 +30,23 @@ export class FormComponent {
   public stateBet:AbstractControl;
   public typeBet:AbstractControl;
   public test:string;
+  public userId:string;
   constructor(private fb:FormBuilder,
               private http:HttpClient,
               private paperService:PaperService,
-              private transactionService:TransactionService) {
+              private transactionService:TransactionService,
+              private router:Router) {
+
+    
+                if (!localStorage.getItem("user")) {
+                  console.log("here")
+                  window.location.assign('/#/login');
+                 
+                } else {
+                  this.userId = localStorage.getItem("user");
+                  console.log(localStorage.getItem("user"));
+            
+                }
 
     this.form = fb.group({
       'price': ['', Validators.compose([Validators.required, Validators.min(1)])],
