@@ -52,7 +52,7 @@ export class FormComponent {
     
     this.formBet = fb.group({
       'league': ['', Validators.compose([Validators.required, Validators.min(1)])],
-      'coteBet': ['', Validators.compose([Validators.required, Validators.min(1)])],
+      'coteBet': '',
       'stateBet': '',
       'typeBet': new FormArray([])
     });

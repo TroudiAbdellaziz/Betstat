@@ -123,8 +123,8 @@ export class DashboardComponent implements OnInit {
           let league = this.user.leagues[i];
           console.log(league);
           news = {
-            large: league.rate,
-            small: league.nbBets,
+            large: Math.round(league.rate * 100)+'%',
+            small: league.nbBets+' bets',
             title: league.name,
           }
           this.leagueList.push(news);
